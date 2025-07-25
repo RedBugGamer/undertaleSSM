@@ -3,11 +3,11 @@ import json
 from os import getenv
 from pathlib import Path
 from .run import Run
-from .util import autosave
+from .util import autosave, AutoSaveable
 
 from . import types
 
-class DataFileInterface:
+class DataFileInterface(AutoSaveable):
     def __init__(self, data_file: str) -> None:
         self.data_file: str = data_file
         self.saves_path: str = ""
@@ -18,7 +18,8 @@ class DataFileInterface:
 
         data_file_data = self._read()
         self._parse(data_file_data)
-
+    def getDataFileInterface(self) -> DataFileInterface:
+        return self
     def _read(self) -> types.DataFileStructure:
         try:
             with open(self.data_file, "r") as dataFile:
@@ -43,7 +44,7 @@ class DataFileInterface:
             self._runs[run.uuid] = run
 
     def getNewRun(self, run_data: types.RunData = {}) -> Run:
-        return Run.fromDict(self.saves_path, run_data)
+        return Run.fromDict(self, run_data)
 
     def toDict(self) -> types.DataFileStructure:
         out: types.DataFileStructure = {

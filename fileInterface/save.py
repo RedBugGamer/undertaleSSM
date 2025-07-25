@@ -2,8 +2,14 @@ from __future__ import annotations
 from datetime import datetime
 import enum
 from pathlib import Path
+from typing import TYPE_CHECKING
 import uuid
+from .util import AutoSaveable, autosave
 from . import types
+
+if TYPE_CHECKING:
+    from .dataFileInterface import DataFileInterface
+
 
 class SaveType(enum.Enum):
     UNKNOWN = "unknown"
@@ -13,9 +19,9 @@ class SaveType(enum.Enum):
     SAVE_POINT = "save_point"
 
 
-class Save:
+class Save(AutoSaveable):
     @classmethod
-    def fromDict(cls, saves_directory: str, data: types.SaveData) -> Save:
+    def fromDict(cls, dataFileInterface: DataFileInterface, data: types.SaveData) -> Save:
         uuidStr = data.get("uuid")
         if type(uuidStr) != str:
             uuidStr = str(uuid.uuid4())
@@ -31,11 +37,12 @@ class Save:
         nextUUIDs = data.get("nextUUIDs")
         if type(nextUUIDs) != list:
             nextUUIDs = []
-            
+
         hash = data.get("hash")
-        if type(hash) != str: hash = ""
+        if type(hash) != str:
+            hash = ""
         return cls(
-            saves_directory,
+            dataFileInterface,
             uuidStr,
             SaveType(data.get("type", SaveType.UNKNOWN)),
             datetime.fromtimestamp(
@@ -45,16 +52,30 @@ class Save:
             hash
         )
 
-    def __init__(self, saves_directory: str, uuid: str, type: SaveType, timestamp: datetime, previousUUID: str | None, nextUUIDs: list[str], hash: str):
+    def __init__(self, dataFileInterface: DataFileInterface, uuid: str, type: SaveType, timestamp: datetime, previousUUID: str | None, nextUUIDs: list[str], hash: str):
         self.uuid: str = uuid
-        self.directory: str = str(Path(saves_directory)/self.uuid)
-        self.type: SaveType = type
+        self.dataFileInterface: DataFileInterface = dataFileInterface
+        self.directory: str = str(Path(dataFileInterface.saves_path)/self.uuid)
+        self._type: SaveType = type
         self.timestamp: datetime = timestamp
         self.previousUUID: str | None = previousUUID
         self.nextUUids: list[str] = nextUUIDs
         self.hash: str = hash
+
+    def getDataFileInterface(self) -> DataFileInterface:
+        return self.dataFileInterface
+
+    @property
+    def type(self) -> SaveType:
+        return self._type
+
+    @type.setter
+    @autosave
+    def type(self, value: SaveType):
+        self._type = value
+
     def toDict(self) -> types.SaveData:
-        out:types.SaveData = {
+        out: types.SaveData = {
             "uuid": self.uuid,
             "hash": self.hash,
             "type": self.type.value,

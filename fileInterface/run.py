@@ -1,12 +1,17 @@
 from __future__ import annotations
 from uuid import uuid4
+from typing import TYPE_CHECKING
+
 from .save import Save
+from .util import AutoSaveable, autosave
 from . import types
+if TYPE_CHECKING:
+    from .dataFileInterface import DataFileInterface
 
 
-class Run:
+class Run(AutoSaveable):
     @classmethod
-    def fromDict(cls, saves_directory: str, data: types.RunData) -> Run:
+    def fromDict(cls, dataFileInterface: DataFileInterface, data: types.RunData) -> Run:
         description = data.get("description")
         if type(description) != str:
             description = ""
@@ -27,10 +32,10 @@ class Run:
         if type(raw_saves) != list:
             raw_saves = []
 
-        saves = [Save.fromDict(saves_directory, saveData)
+        saves = [Save.fromDict(dataFileInterface, saveData)
                  for saveData in raw_saves]
         return cls(
-            saves_directory,
+            dataFileInterface,
             description,
             uuid,
             latestSaveUUID,
@@ -38,14 +43,27 @@ class Run:
             saves
         )
 
-    def __init__(self, directory: str, description: str, uuid: str, latestSaveUUID: str | None, startSaveUUID: str | None, saves: list[Save]) -> None:
-        self.directory: str = directory
-        self.description: str = description
+    def __init__(self, dataFileInterface: DataFileInterface, description: str, uuid: str, latestSaveUUID: str | None, startSaveUUID: str | None, saves: list[Save]) -> None:
+        self.directory: str = dataFileInterface.saves_path
+        self.dataFileInterface: DataFileInterface = dataFileInterface
+        self._description: str = description
         self.uuid: str = uuid
         self.latestSaveUUID: str | None = latestSaveUUID
         self.startSaveUUID: str | None = startSaveUUID
 
         self.saves: dict[str, Save] = self._parse(saves)
+
+    def getDataFileInterface(self) -> DataFileInterface:
+        return self.dataFileInterface
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+    @description.setter
+    @autosave
+    def description(self, value: str):
+        self._description = value
 
     def _parse(self, raw_saves: list[Save]) -> dict[str, Save]:
         saves: dict[str, Save] = {}
@@ -57,7 +75,7 @@ class Run:
         save_data: types.SavesList = [save.toDict()
                                       for save in self.getSaves()]
         out: types.RunData = {
-            "description": self.description,
+            "description": self._description,
             "uuid": self.uuid,
             "latestSaveUUID": self.latestSaveUUID,
             "startUUID": self.startSaveUUID,
