@@ -21,7 +21,7 @@ class Save:
             uuidStr = str(uuid.uuid4())
 
         timestamp = data.get("timestamp")
-        if type(timestamp) != float:
+        if type(timestamp) != int:
             timestamp = datetime.now().timestamp()
 
         previous = data.get("previous")
