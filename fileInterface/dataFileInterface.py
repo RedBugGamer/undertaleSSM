@@ -1,9 +1,26 @@
+from __future__ import annotations
+from functools import wraps
 import json
 from os import getenv
 from pathlib import Path
+from typing import Callable, Concatenate, ParamSpec, TypeVar
 from .run import Run
 
 from . import types
+
+
+P = ParamSpec("P")
+R = TypeVar("R")
+
+
+def autosave(func: Callable[Concatenate[DataFileInterface, P], R]) -> Callable[Concatenate[DataFileInterface, P], R]:
+    @wraps(func)
+    def _out(self: DataFileInterface, *args: P.args, **kwargs: P.kwargs) -> R:
+        result: R = func(self, *args, **kwargs)
+        if self.autosave:
+            self.save()
+        return result
+    return _out
 
 
 class DataFileInterface:
@@ -12,6 +29,7 @@ class DataFileInterface:
         self.saves_path: str = ""
         self.undertale_data_path: str = ""
         self.currentRun: Run | None = None
+        self.autosave: bool = False
         self._runs: dict[str, Run] = {}
 
         data_file_data = self._read()
@@ -58,6 +76,7 @@ class DataFileInterface:
         with open(self.data_file, "w") as dataFile:
             json.dump(self.toDict(), dataFile, indent=4)
 
+    @autosave
     def appendRun(self, run: Run):
         self._runs[run.uuid] = run
 
