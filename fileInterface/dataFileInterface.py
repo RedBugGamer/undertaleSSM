@@ -12,7 +12,7 @@ class DataFileInterface:
         self.saves_path: str = ""
         self.undertale_data_path: str = ""
         self.currentRun: Run | None = None
-        self.runs: dict[str, Run] = {}
+        self._runs: dict[str, Run] = {}
 
         data_file_data = self._read()
         self._parse(data_file_data)
@@ -35,18 +35,33 @@ class DataFileInterface:
         runs_data = data_file_data.get("runs")
         if type(runs_data) != list:
             runs_data = []
-        
+
         for run_data in runs_data:
-            run = Run.fromDict(self.saves_path,run_data)
-            self.runs[run.uuid] = run
-    
+            run = self.getNewRun(run_data)
+            self._runs[run.uuid] = run
+
+    def getNewRun(self, run_data: types.RunData = {}) -> Run:
+        return Run.fromDict(self.saves_path, run_data)
+
     def toDict(self) -> types.DataFileStructure:
-        out:types.DataFileStructure = {
+        out: types.DataFileStructure = {
             "savesPath": self.saves_path,
             "undertaleDataPath": self.undertale_data_path,
             "runs": [run.toDict() for run in self.getRuns()]
         }
         return out
 
-    def getRuns(self):
-        return [run for _, run in self.runs.items()]
+    def getRuns(self) -> list[Run]:
+        return [run for _, run in self._runs.items()]
+
+    def save(self):
+        with open(self.data_file, "w") as dataFile:
+            json.dump(self.toDict(), dataFile, indent=4)
+
+    def appendRun(self, run: Run):
+        self._runs[run.uuid] = run
+
+    def createRun(self) -> Run:
+        run = self.getNewRun()
+        self.appendRun(run)
+        return run
