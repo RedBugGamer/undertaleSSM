@@ -54,8 +54,9 @@ class Run:
         return saves
 
     def toDict(self) -> types.RunData:
-        save_data:types.SavesList = [save.toDict() for save in self.getSaves()]
-        out:types.RunData = {
+        save_data: types.SavesList = [save.toDict()
+                                      for save in self.getSaves()]
+        out: types.RunData = {
             "description": self.description,
             "uuid": self.uuid,
             "latestSaveUUID": self.latestSaveUUID,
