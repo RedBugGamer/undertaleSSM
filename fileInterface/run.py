@@ -1,4 +1,5 @@
 from __future__ import annotations
+from uuid import uuid4
 from .save import Save
 from . import types
 
@@ -12,7 +13,7 @@ class Run:
 
         uuid = data.get("uuid")
         if type(uuid) != str:
-            uuid = ""
+            uuid = str(uuid4())
 
         latestSaveUUID = data.get("latestSaveUUID")
         if type(latestSaveUUID) != str and latestSaveUUID is not None:
