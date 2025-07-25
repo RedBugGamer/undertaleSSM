@@ -1,27 +1,11 @@
 from __future__ import annotations
-from functools import wraps
 import json
 from os import getenv
 from pathlib import Path
-from typing import Callable, Concatenate, ParamSpec, TypeVar
 from .run import Run
+from .util import autosave
 
 from . import types
-
-
-P = ParamSpec("P")
-R = TypeVar("R")
-
-
-def autosave(func: Callable[Concatenate[DataFileInterface, P], R]) -> Callable[Concatenate[DataFileInterface, P], R]:
-    @wraps(func)
-    def _out(self: DataFileInterface, *args: P.args, **kwargs: P.kwargs) -> R:
-        result: R = func(self, *args, **kwargs)
-        if self.autosave:
-            self.save()
-        return result
-    return _out
-
 
 class DataFileInterface:
     def __init__(self, data_file: str) -> None:
