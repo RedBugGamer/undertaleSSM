@@ -10,7 +10,7 @@ class AutoSaveable:
 
 P = ParamSpec("P")
 R = TypeVar("R")
-T = TypeVar("T",bound="AutoSaveable")
+T = TypeVar("T",bound=AutoSaveable)
 
 def autosave(func: Callable[Concatenate[T, P], R]) -> Callable[Concatenate[T, P], R]:
     @wraps(func)
