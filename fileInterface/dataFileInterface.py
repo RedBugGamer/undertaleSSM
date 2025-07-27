@@ -7,6 +7,7 @@ from .util import autosave, AutoSaveable
 
 from . import types
 
+
 class DataFileInterface(AutoSaveable):
     def __init__(self, data_file: str) -> None:
         self.data_file: str = data_file
@@ -18,8 +19,10 @@ class DataFileInterface(AutoSaveable):
 
         data_file_data = self._read()
         self._parse(data_file_data)
+
     def getDataFileInterface(self) -> DataFileInterface:
         return self
+
     def _read(self) -> types.DataFileStructure:
         try:
             with open(self.data_file, "r") as dataFile:
