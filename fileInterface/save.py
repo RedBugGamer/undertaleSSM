@@ -105,15 +105,26 @@ class Save(AutoSaveable):
 
         self.hash = dirhash(target_path, "sha1")
 
+    def _onFileError(self,func: Callable[[str], Any], path: str, _: Any):
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except Exception:
+            pass
+
+    def pushDirectory(self):
+        dfi: DataFileInterface = self.getDataFileInterface()
+        src_path: str = self.directory
+        target_path: str = dfi.undertale_data_path
+
+        shutil.rmtree(target_path, onexc=self._onFileError)
+        shutil.copytree(src_path, target_path)
+
+        self.run.travelToSave(self)
+
     def rmDir(self):
-        def _onFileError(func:Callable[[str],Any], path:str, _:Any):
-            try:
-                os.chmod(path, stat.S_IWRITE)
-                func(path)
-            except Exception:
-                pass
         shutil.rmtree(self.directory,
-                      onexc=_onFileError)
+                      onexc=self._onFileError)
 
     def stitchToPrevious(self, previousSave: Save):
         self.previousUUID = previousSave.uuid
