@@ -32,18 +32,16 @@ class Run(AutoSaveable):
         if type(raw_saves) != list:
             raw_saves = []
 
-        saves = [Save.fromDict(dataFileInterface, saveData)
-                 for saveData in raw_saves]
         return cls(
             dataFileInterface,
             description,
             uuid,
             latestSaveUUID,
             startSaveUUID,
-            saves
+            raw_saves
         )
 
-    def __init__(self, dataFileInterface: DataFileInterface, description: str, uuid: str, latestSaveUUID: str | None, startSaveUUID: str | None, saves: list[Save]) -> None:
+    def __init__(self, dataFileInterface: DataFileInterface, description: str, uuid: str, latestSaveUUID: str | None, startSaveUUID: str | None, raw_saves: types.SavesList) -> None:
         self.directory: str = dataFileInterface.saves_path
         self.dataFileInterface: DataFileInterface = dataFileInterface
         self._description: str = description
@@ -51,6 +49,8 @@ class Run(AutoSaveable):
         self.latestSaveUUID: str | None = latestSaveUUID
         self.startSaveUUID: str | None = startSaveUUID
 
+        saves = [Save.fromDict(self, saveData)
+                 for saveData in raw_saves]
         self.saves: dict[str, Save] = self._parse(saves)
 
     def getDataFileInterface(self) -> DataFileInterface:
@@ -85,3 +85,37 @@ class Run(AutoSaveable):
 
     def getSaves(self) -> list[Save]:
         return [save for _, save in self.saves.items()]
+
+    def getSaveByUUID(self, uuid: str) -> Save | None:
+        return self.saves.get(uuid)
+
+    @property
+    def latestSave(self) -> Save | None:
+        if self.latestSaveUUID is None:
+            return
+        return self.getSaveByUUID(self.latestSaveUUID)
+
+    def travelToSave(self, save: Save):
+        self.latestSaveUUID = save.uuid
+
+    @autosave
+    def appendSave(self, save: Save):
+        self.saves[save.uuid] = save
+
+    def createSave(self) -> Save:
+        save = Save.fromEmpty(self)
+        save.pullDirectory()
+
+        if self.latestSave is not None:
+            save.stitchToPrevious(self.latestSave)
+        self.travelToSave(save)
+
+        if self.startSaveUUID is None:
+            self.startSaveUUID = save.uuid
+
+        self.appendSave(save)
+        return save
+    @autosave
+    def removeSave(self,save:Save):
+        save.removeStitches()
+        self.saves.pop(save.uuid)

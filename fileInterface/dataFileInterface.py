@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 from os import getenv
+import os
 from pathlib import Path
 from .run import Run
 from .util import autosave, AutoSaveable
@@ -61,8 +62,12 @@ class DataFileInterface(AutoSaveable):
         return [run for _, run in self._runs.items()]
 
     def save(self):
-        with open(self.data_file, "w") as dataFile:
-            json.dump(self.toDict(), dataFile, indent=4)
+        if os.path.exists(self.data_file + "_old"):
+            os.remove(self.data_file + "_old")
+        if os.path.exists(self.data_file):
+            os.rename(self.data_file, self.data_file + "_old")
+        with open(self.data_file, "w") as f:
+            json.dump(self.toDict(), f, indent=4)
 
     @autosave
     def appendRun(self, run: Run):

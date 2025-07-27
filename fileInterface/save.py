@@ -2,13 +2,17 @@ from __future__ import annotations
 from datetime import datetime
 import enum
 from pathlib import Path
+import shutil
 from typing import TYPE_CHECKING
 import uuid
+
+from dirhash import dirhash
 from .util import AutoSaveable, autosave
 from . import types
 
 if TYPE_CHECKING:
     from .dataFileInterface import DataFileInterface
+    from .run import Run
 
 
 class SaveType(enum.Enum):
@@ -21,7 +25,11 @@ class SaveType(enum.Enum):
 
 class Save(AutoSaveable):
     @classmethod
-    def fromDict(cls, dataFileInterface: DataFileInterface, data: types.SaveData) -> Save:
+    def fromEmpty(cls, run: Run) -> Save:
+        return cls.fromDict(run, {})
+
+    @classmethod
+    def fromDict(cls, run: Run, data: types.SaveData) -> Save:
         uuidStr = data.get("uuid")
         if type(uuidStr) != str:
             uuidStr = str(uuid.uuid4())
@@ -42,7 +50,7 @@ class Save(AutoSaveable):
         if type(hash) != str:
             hash = ""
         return cls(
-            dataFileInterface,
+            run,
             uuidStr,
             SaveType(data.get("type", SaveType.UNKNOWN)),
             datetime.fromtimestamp(
@@ -52,10 +60,12 @@ class Save(AutoSaveable):
             hash
         )
 
-    def __init__(self, dataFileInterface: DataFileInterface, uuid: str, type: SaveType, timestamp: datetime, previousUUID: str | None, nextUUIDs: list[str], hash: str):
+    def __init__(self, run: Run, uuid: str, type: SaveType, timestamp: datetime, previousUUID: str | None, nextUUIDs: list[str], hash: str):
         self.uuid: str = uuid
-        self.dataFileInterface: DataFileInterface = dataFileInterface
-        self.directory: str = str(Path(dataFileInterface.saves_path)/self.uuid)
+        self.dataFileInterface: DataFileInterface = run.getDataFileInterface()
+        self.run: Run = run
+        self.directory: str = str(
+            Path(self.dataFileInterface.saves_path)/self.uuid)
         self._type: SaveType = type
         self.timestamp: datetime = timestamp
         self.previousUUID: str | None = previousUUID
@@ -84,3 +94,42 @@ class Save(AutoSaveable):
             "nextUUIDs": self.nextUUids
         }
         return out
+
+    def pullDirectory(self):
+        dfi: DataFileInterface = self.getDataFileInterface()
+        src_path: str = dfi.undertale_data_path
+        target_path: str = self.directory
+        shutil.copytree(src_path, target_path)
+
+        self.hash = dirhash(target_path, "sha1")
+
+    def stitchToPrevious(self, previousSave: Save):
+        self.previousUUID = previousSave.uuid
+
+        previousSave.nextUUids.append(self.uuid)
+
+    def removeStitches(self):
+        if self.previous is not None:
+            self.previous.nextUUids.remove(self.uuid)
+            self.previous.nextUUids.extend(self.nextUUids)
+
+            for nextUUID in self.nextUUids:
+                nextSave: Save | None = self.run.getSaveByUUID(nextUUID)
+                if nextSave is None:
+                    continue
+                nextSave.previous = self.previous
+            if self.run.latestSave == self:
+                self.run.latestSaveUUID = self.previousUUID
+
+    @property
+    def previous(self) -> Save | None:
+        if not self.previousUUID:
+            return None
+        return self.run.getSaveByUUID(self.previousUUID)
+
+    @previous.setter
+    def previous(self, save: Save):
+        self.previousUUID = save.uuid
+
+    def __eq__(self, value: object) -> bool:
+        return type(value) == self.__class__ and self.uuid == value.uuid
