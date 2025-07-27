@@ -1,9 +1,11 @@
 from __future__ import annotations
 from datetime import datetime
 import enum
+import os
 from pathlib import Path
 import shutil
-from typing import TYPE_CHECKING
+import stat
+from typing import TYPE_CHECKING, Any, Callable
 import uuid
 
 from dirhash import dirhash
@@ -102,6 +104,16 @@ class Save(AutoSaveable):
         shutil.copytree(src_path, target_path)
 
         self.hash = dirhash(target_path, "sha1")
+
+    def rmDir(self):
+        def _onFileError(func:Callable[[str],Any], path:str, _:Any):
+            try:
+                os.chmod(path, stat.S_IWRITE)
+                func(path)
+            except Exception:
+                pass
+        shutil.rmtree(self.directory,
+                      onexc=_onFileError)
 
     def stitchToPrevious(self, previousSave: Save):
         self.previousUUID = previousSave.uuid

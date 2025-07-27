@@ -118,4 +118,5 @@ class Run(AutoSaveable):
     @autosave
     def removeSave(self,save:Save):
         save.removeStitches()
+        save.rmDir()
         self.saves.pop(save.uuid)
