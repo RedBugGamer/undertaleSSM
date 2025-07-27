@@ -16,7 +16,6 @@ def autosave(func: Callable[Concatenate[T, P], R]) -> Callable[Concatenate[T, P]
     @wraps(func)
     def wrapper(self: T, *args: P.args, **kwargs: P.kwargs) -> R:
         result: R = func(self, *args, **kwargs)
-        print("Called the autosave decorator from", type(self))
         dfi: DataFileInterface = self.getDataFileInterface()
         if dfi.autosave:
             dfi.save()
