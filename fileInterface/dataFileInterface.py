@@ -17,6 +17,7 @@ class DataFileInterface(AutoSaveable):
         self.currentRun: Run | None = None
         self.autosave: bool = False
         self._runs: dict[str, Run] = {}
+        self.activeRun: Run | None = None
 
         data_file_data = self._read()
         self._parse(data_file_data)

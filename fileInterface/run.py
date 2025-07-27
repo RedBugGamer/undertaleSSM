@@ -95,6 +95,7 @@ class Run(AutoSaveable):
             return
         return self.getSaveByUUID(self.latestSaveUUID)
 
+    @autosave
     def travelToSave(self, save: Save):
         self.latestSaveUUID = save.uuid
 
@@ -115,8 +116,9 @@ class Run(AutoSaveable):
 
         self.appendSave(save)
         return save
+
     @autosave
-    def removeSave(self,save:Save):
+    def removeSave(self, save: Save):
         save.removeStitches()
         save.rmDir()
         self.saves.pop(save.uuid)
