@@ -6,7 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "undertaleSSM"
 version = "0.1.0"
 description = ""
-authors = ["RedBugGamer"]
+authors = [
+    { name = "RedBugGamer"}
+]
 requires-python = ">=3.12.6"
 dependencies = [
     "dirhash==0.5.0",
