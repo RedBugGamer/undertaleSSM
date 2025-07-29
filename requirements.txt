@@ -1,5 +1,9 @@
 attrs==25.3.0
 dirhash==0.5.0
 pathspec==0.12.1
+PySide6==6.9.1
+PySide6_Addons==6.9.1
+PySide6_Essentials==6.9.1
 scantree==0.0.4
+shiboken6==6.9.1
 watchdog==6.0.0

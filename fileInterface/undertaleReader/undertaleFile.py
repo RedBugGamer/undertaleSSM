@@ -169,3 +169,39 @@ class UndertaleFile:
             if getattr(self, attr) != getattr(other, attr):
                 diffs.append(attr)
         return diffs
+
+    @property
+    def inventory(self) -> list[Items]:
+        raw_items: list[Items] = [
+            self.inventory_slot_1,
+            self.inventory_slot_2,
+            self.inventory_slot_3,
+            self.inventory_slot_4,
+            self.inventory_slot_5,
+            self.inventory_slot_6,
+            self.inventory_slot_7,
+            self.inventory_slot_8
+        ]
+        out: list[Items] = []
+        for item in raw_items:
+            if item != Items.EMPTY:
+                out.append(item)
+        return out
+
+    @property
+    def cellphone(self) -> list[Cellphone]:
+        raw_items: list[Cellphone] = [
+            self.cellphone_talk_option_1,
+            self.cellphone_talk_option_2,
+            self.cellphone_talk_option_3,
+            self.cellphone_talk_option_4,
+            self.cellphone_talk_option_5,
+            self.cellphone_talk_option_6,
+            self.cellphone_talk_option_7,
+            self.cellphone_talk_option_8
+        ]
+        out: list[Cellphone] = []
+        for item in raw_items:
+            if item != Cellphone.EMPTY:
+                out.append(item)
+        return out

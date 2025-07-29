@@ -1,4 +1,6 @@
 from pathlib import Path
+
+from fileInterface.undertaleReader.undertaleIni import UndertaleIni
 from .undertaleFile import UndertaleFile
 # from .undertaleIni import UndertaleIni
 
@@ -20,3 +22,5 @@ class UndertaleDirectory:
         self.file7: UndertaleFile | None = self.files.get("file7")
         self.file8: UndertaleFile | None = self.files.get("file8")
         self.file9: UndertaleFile | None = self.files.get("file9")
+        
+        self.iniFile: UndertaleIni = UndertaleIni(str(pathlib_path/"undertale.ini"))
