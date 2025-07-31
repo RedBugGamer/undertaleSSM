@@ -1,15 +1,12 @@
-"""
-Thanks to https://github.com/crumblingstatue/FloweysTimeMachine/blob/gh-pages/research/savefile.md research!
-"""
 import enum
 
 
 class Cellphone(enum.Enum):
-    EMPTY = 0
+    NONE = 0
     SAY_HELLO = 201
     PUZZLE_HELP = 202
     ABOUT_YOURSELF = 203
-    CALL_HER_MOM = 204
+    CALL_TORIEL_MOM = 204
     FLIRT = 205
     TORIELS_PHONE = 206
     PAPYRUS_PHONE = 210

@@ -1,11 +1,8 @@
-"""
-Thanks to https://github.com/crumblingstatue/FloweysTimeMachine/blob/gh-pages/research/savefile.md research!
-"""
 import enum
 
 
 class Items(enum.Enum):
-    EMPTY = 0
+    NONE = 0
     MONSTER_CANDY = 1
     CROQUET_ROLL = 2
     STICK = 3
@@ -70,4 +67,3 @@ class Items(enum.Enum):
     HUSH_PUPPY = 62
     SNAIL_PIE = 63
     TEMY_ARMOR = 64
-    INVALID = 65
