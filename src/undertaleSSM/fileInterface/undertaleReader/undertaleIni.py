@@ -1,6 +1,7 @@
 from PySide6.QtCore import QSettings
 
 from .flags import IniFlags
+from .rooms import Rooms
 
 
 class UndertaleIni:
@@ -17,11 +18,16 @@ class UndertaleIni:
         if as_str:
             return int(float(as_str))
         return
+    def getAsRoom(self, key: IniFlags) -> Rooms|None:
+        as_int = self.getAsInt(key)
+        if as_int:
+            return Rooms(as_int)
+        return
 
     def _parse(self):
         self.general_name = self.getAsStr(IniFlags.GENERAL_NAME)
         self.general_time = self.getAsInt(IniFlags.GENERAL_TIME)
-        self.general_room = self.getAsInt(IniFlags.GENERAL_ROOM)
+        self.general_room = self.getAsRoom(IniFlags.GENERAL_ROOM)
         self.general_gameover = self.getAsInt(IniFlags.GENERAL_GAMEOVER)
         self.general_kills = self.getAsInt(IniFlags.GENERAL_KILLS)
         self.general_love = self.getAsInt(IniFlags.GENERAL_LOVE)
