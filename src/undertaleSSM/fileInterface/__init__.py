@@ -1,1 +1,1 @@
-import undertaleReader
+import .undertaleReader
