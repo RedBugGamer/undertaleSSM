@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fileInterface.undertaleReader.undertaleIni import UndertaleIni
+from .undertaleIni import UndertaleIni
 from .undertaleFile import UndertaleFile
 # from .undertaleIni import UndertaleIni
 
