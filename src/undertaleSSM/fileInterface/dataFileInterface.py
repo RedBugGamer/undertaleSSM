@@ -16,7 +16,6 @@ class DataFileInterface(AutoSaveable):
         self.data_file: str = data_file
         self.saves_path: str = ""
         self.undertale_data_path: str = ""
-        self.currentRun: Run | None = None
         self.autosave: bool = False
         self._runs: dict[str, Run] = {}
         self.activeRun: Run | None = None
