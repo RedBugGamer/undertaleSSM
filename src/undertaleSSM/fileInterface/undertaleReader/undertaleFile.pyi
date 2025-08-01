@@ -369,7 +369,7 @@ class UndertaleFile:
     plot_over: int
     conversation_asriel2: int
     choice_left_toriel: int
-    plot: int
+    plot: float
     menuchoice_0: int
     menuchoice_1: int
     menuchoice_2: int

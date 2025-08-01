@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING, Any, Callable
 import uuid
 
 from dirhash import dirhash
+
+from .undertaleReader.undertaleDir import UndertaleDirectory
 from .util import AutoSaveable, autosave
 from . import types
 
@@ -154,5 +156,8 @@ class Save(AutoSaveable):
     def previous(self, save: Save):
         self.previousUUID = save.uuid
 
+    def getReader(self) -> UndertaleDirectory:
+        return UndertaleDirectory(self.directory)
+    
     def __eq__(self, value: object) -> bool:
         return type(value) == self.__class__ and self.uuid == value.uuid
