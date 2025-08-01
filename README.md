@@ -23,7 +23,7 @@ print(directory.file0.inventory)
 print(directory.iniFile.general_time)
 
 ```
-
-I don't recommend using the `undertaleSSM.fileInterface` module at the moment, as no documentation exists and it likely has bugs.
+I am implmenting some basic cli options. If you want to record your playthrough, you can run the following command and specify a data.json file. If the file does not exist, it will be created with default values
+`python -m undertaleSSM record /path/to/data.json`
 
 **I am not responsible for lost data!**

@@ -3,8 +3,12 @@ from typing import Callable
 from watchdog.observers.api import BaseObserver
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEvent, FileSystemEventHandler, EVENT_TYPE_DELETED
+from .save import Save
 from .dataFileInterface import DataFileInterface
+from PySide6.QtCore import QObject, Signal
 
+class AutoSaveSignalEmitter(QObject):
+    auto_saved = Signal(Save)
 
 class DirectoryEventHandler(FileSystemEventHandler):
     FILE_DELAY = 0.1
@@ -31,10 +35,12 @@ class SaveStateManager(DataFileInterface):
     def __init__(self, data_file: str) -> None:
         super().__init__(data_file)
         self.observer: BaseObserver | None = None
+        self.signals = AutoSaveSignalEmitter()
 
     def _observerCallback(self):
         if self.activeRun:
-            self.activeRun.createSave()
+            save = self.activeRun.createSave()
+            self.signals.auto_saved.emit(save)
 
     def _observerRestartCallback(self):
         self.stopObserver()
