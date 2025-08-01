@@ -17,3 +17,6 @@ dependencies = [
     "PySide6_Addons==6.9.1",
     "PySide6_Essentials==6.9.1"
 ]
+
+[project.urls]
+Homepage = "https://github.com/RedBugGamer/undertaleSSM"
