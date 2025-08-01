@@ -39,11 +39,13 @@ class SaveStateManager(DataFileInterface):
     def _observerRestartCallback(self):
         self.stopObserver()
         timer = Timer(DirectoryEventHandler.FILE_DELAY, self.startObserver)
+        timer.daemon = True
         timer.start()
 
     def startObserver(self):
         if self.observer is None:
             self.observer = Observer()
+            self.observer.daemon = True
             self.observer.schedule(DirectoryEventHandler(
                 self._observerCallback, self._observerRestartCallback), self.undertale_data_path)
             self.observer.start()
