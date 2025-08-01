@@ -83,3 +83,6 @@ class DataFileInterface(AutoSaveable):
 
     def getReader(self) -> UndertaleDirectory:
         return UndertaleDirectory(self.undertale_data_path)
+    
+    def getRunByUUID(self,uuid:str) ->Run | None:
+        return self._runs.get(uuid)
