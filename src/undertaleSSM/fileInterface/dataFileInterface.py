@@ -3,6 +3,8 @@ import json
 from os import getenv
 import os
 from pathlib import Path
+
+from .undertaleReader.undertaleDir import UndertaleDirectory
 from .run import Run
 from .util import autosave, AutoSaveable
 
@@ -78,3 +80,6 @@ class DataFileInterface(AutoSaveable):
         run = self.getNewRun()
         self.appendRun(run)
         return run
+
+    def getReader(self) -> UndertaleDirectory:
+        return UndertaleDirectory(self.undertale_data_path)
