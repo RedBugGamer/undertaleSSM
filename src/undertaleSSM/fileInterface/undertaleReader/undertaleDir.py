@@ -44,5 +44,6 @@ class UndertaleDirectory:
         if self.iniFile != other.iniFile:
             return False
         return True
+
     def __ne__(self, value: object) -> bool:
         return not self.__eq__(value)
