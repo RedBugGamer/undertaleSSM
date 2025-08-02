@@ -151,12 +151,16 @@ class Run(AutoSaveable):
         """
         self.saves[save.uuid] = save
 
-    def createSave(self) -> Save:
+    def createSave(self,force:bool = False) -> Save | None:
         """
         This method creates a new `Save` object, and integrates it fully into the data structure.
+        Args:
+            force (bool): Wether to skip comparison to previous save
         Returns:
-            The newly created `Save` object
+            The newly created `Save` object or `None` if save was skipped
         """
+        if not force and self.latestSave and self.latestSave.getReader()==self.getDataFileInterface().getReader():
+            return None
         save = Save.fromEmpty(self)
         save.pullDirectory()
 

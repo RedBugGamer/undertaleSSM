@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pathlib import Path
 
 from .undertaleIni import UndertaleIni
@@ -13,6 +14,7 @@ class UndertaleDirectory:
     >>> ud = UndertaleDirectory("/path/to/undertale/directory/")
     >>> print(ud.file0.room)
     """
+
     def __init__(self, path: str) -> None:
         pathlib_path: Path = Path(path)
         file_paths = list(pathlib_path.glob("file[0-9]*"))
@@ -29,5 +31,18 @@ class UndertaleDirectory:
         self.file7: UndertaleFile | None = self.files.get("file7")
         self.file8: UndertaleFile | None = self.files.get("file8")
         self.file9: UndertaleFile | None = self.files.get("file9")
-        
-        self.iniFile: UndertaleIni = UndertaleIni(str(pathlib_path/"undertale.ini"))
+
+        self.iniFile: UndertaleIni = UndertaleIni(
+            str(pathlib_path/"undertale.ini"))
+
+    def __eq__(self, other: object) -> bool:
+        if type(other) != self.__class__:
+            return False
+        for f_name, file in self.files.items():
+            if file != other.files.get(f_name):
+                return False
+        if self.iniFile != other.iniFile:
+            return False
+        return True
+    def __ne__(self, value: object) -> bool:
+        return not self.__eq__(value)

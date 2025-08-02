@@ -544,3 +544,8 @@ class UndertaleFile:
             if item != Cellphone.NONE:
                 out.append(item)
         return out
+    
+    def __eq__(self, value: object) -> bool:
+        if type(value) != self.__class__:
+            return False
+        return len(self.compare_to(value)) == 0

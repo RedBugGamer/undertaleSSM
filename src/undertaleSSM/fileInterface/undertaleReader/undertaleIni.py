@@ -1,3 +1,4 @@
+from __future__ import annotations
 from PySide6.QtCore import QSettings
 
 from .flags import IniFlags
@@ -91,3 +92,18 @@ class UndertaleIni:
         self.alphys_ad = self.getAsInt(IniFlags.ALPHYS_AD)
         self.f7_f7 = self.getAsInt(IniFlags.F7_F7)
         self.endf_endf = self.getAsInt(IniFlags.ENDF_ENDF)
+
+    def compare_to(self, other: UndertaleIni) -> list[str]:
+        attrs:list[str] = ["general_name","general_time","general_room","general_gameover","general_kills","general_love","general_fun","general_capital_fun","general_tale","general_won","general_bw","general_bc","general_cp","general_bp","general_ch","general_bh","reset_reset","reset_s_key","flowey_met1","flowey_k","flowey_nk","flowey_ik","flowey_sk","flowey_floweyexplain1","flowey_ex","flowey_change","flowey_ak","flowey_af","flowey_alter","flowey_alter2","flowey_truename","flowey_specialk","toriel_bscotch","toriel_ts","toriel_tk","sans_m1","sans_endmet","sans_meetlv1","sans_meetlv2","sans_meetlv","sans_pass","sans_intro","sans_f","sans_mp","sans_sk","sans_ss","sans_ss2","papyrus_m1","papyrus_ps","papyrus_pd","papyrus_pk","fffff_f","fffff_d","fffff_p","fffff_e","undyne_ud","mettaton_bossmet","mett_o","mtt_essayno","asgore_killyou","alphys_ad","f7_f7","endf_endf"]
+        diffs: list[str] = []
+        for attr in attrs:
+            if not hasattr(self, attr) or not hasattr(other, attr):
+                continue
+            if getattr(self, attr) != getattr(other, attr):
+                diffs.append(attr)
+        return diffs
+    
+    def __eq__(self, value: object) -> bool:
+        if type(value) != self.__class__:
+            return False
+        return len(self.compare_to(value)) == 0
