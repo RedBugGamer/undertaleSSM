@@ -6,6 +6,13 @@ from .undertaleFile import UndertaleFile
 
 
 class UndertaleDirectory:
+    """
+    This class allows reading a directory, which contains undertale game files (file[0-9] and undertale.ini).
+
+    Example:
+    >>> ud = UndertaleDirectory("/path/to/undertale/directory/")
+    >>> print(ud.file0.room)
+    """
     def __init__(self, path: str) -> None:
         pathlib_path: Path = Path(path)
         file_paths = list(pathlib_path.glob("file[0-9]*"))

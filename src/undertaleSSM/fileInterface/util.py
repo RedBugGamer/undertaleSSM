@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 
 
 class AutoSaveable:
+    """This is a helper class from which subclasses can be created. It contains only the method `getDataFileInterface()`, which should be overridden by all subclasses"""
     def getDataFileInterface(self) -> DataFileInterface:
         raise NotImplementedError("Must be implemented by subclass")
 
@@ -16,6 +17,9 @@ T = TypeVar("T", bound=AutoSaveable)
 
 
 def autosave(func: Callable[Concatenate[T, P], R]) -> Callable[Concatenate[T, P], R]:
+    """
+    This decorator provides an easy way for methods of subclasses of `AutoSaveable` to autosave after a change happened
+    """
     @wraps(func)
     def wrapper(self: T, *args: P.args, **kwargs: P.kwargs) -> R:
         result: R = func(self, *args, **kwargs)

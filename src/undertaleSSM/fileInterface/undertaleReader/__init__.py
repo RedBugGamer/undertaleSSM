@@ -1,1 +1,3 @@
-from . import cellphone, flags, items, rooms, undertaleDir, undertaleFile, undertaleIni
+"""
+This module allows reading of most files from Undertale (`file[0-9]` and `undertale.ini`)
+"""

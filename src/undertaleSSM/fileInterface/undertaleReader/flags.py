@@ -2,6 +2,9 @@ import enum
 
 
 class Flags(enum.Enum):  # I know that flags are only a subset of the save structure but i'll use the Flags enum for all lines
+    """
+    An enum containing what most lines do in file[0-9]
+    """
     CHARACTER_NAME = 1
     LOVE = 2
     MAX_HP = 3
@@ -366,6 +369,9 @@ class Flags(enum.Enum):  # I know that flags are only a subset of the save struc
 
 
 class IniFlags(enum.Enum):
+    """
+    An enum containing all keys for undertale.ini
+    """
     GENERAL_NAME = "Name"
     GENERAL_TIME = "Time"
     GENERAL_ROOM = "Room"

@@ -32,7 +32,15 @@ class DirectoryEventHandler(FileSystemEventHandler):
 
 
 class SaveStateManager(DataFileInterface):
+    """
+    This is a subclass of `DataFileInterface`, which implements observertion of the undertale game directory
+    """
     def __init__(self, data_file: str) -> None:
+        """
+        Initializer for `SaveStateManager`
+        Args:
+            data_file (str): A file path, where all data should be stored
+        """
         super().__init__(data_file)
         self.observer: BaseObserver | None = None
         self.signals = AutoSaveSignalEmitter()
@@ -49,6 +57,9 @@ class SaveStateManager(DataFileInterface):
         timer.start()
 
     def startObserver(self):
+        """
+        This method starts observation and autosaving of the undertale game directory on change
+        """
         if self.observer is None:
             self.observer = Observer()
             self.observer.daemon = True
@@ -57,6 +68,9 @@ class SaveStateManager(DataFileInterface):
             self.observer.start()
 
     def stopObserver(self):
+        """
+        This method starts observation and autosaving of the undertale game directory on change
+        """
         if self.observer is None:
             return
         self.observer.stop()

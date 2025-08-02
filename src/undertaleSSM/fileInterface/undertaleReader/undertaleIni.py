@@ -5,6 +5,9 @@ from .rooms import Rooms
 
 
 class UndertaleIni:
+    """
+    This class allows reading of undertale.ini and provides all (existing) keys as attributes
+    """
     def __init__(self, path: str) -> None:
         self.file: QSettings = QSettings(
             path, QSettings.Format.IniFormat)

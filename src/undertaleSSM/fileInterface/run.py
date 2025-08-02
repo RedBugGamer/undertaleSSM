@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 class Run(AutoSaveable):
     @classmethod
     def fromDict(cls, dataFileInterface: DataFileInterface, data: types.RunData) -> Run:
+        """
+        This Method creates a new `Run` object, which uses data from a `DataFileInterface` object
+        Args:
+            dataFileInterface (DataFileInterface): a `DataFileInterface` object
+            data (dict): A dict containing raw data as a dict. missing keys will be set to default values
+        """
         description = data.get("description")
         if type(description) != str:
             description = ""
@@ -42,6 +48,16 @@ class Run(AutoSaveable):
         )
 
     def __init__(self, dataFileInterface: DataFileInterface, description: str, uuid: str, latestSaveUUID: str | None, startSaveUUID: str | None, raw_saves: types.SavesList) -> None:
+        """
+        The initializer for the `Run` class
+        Args:
+            dataFileInterface (DataFileInterface):
+            description (str):
+            uuid (str):
+            latestSaveUUID (str | None):
+            startSaveUUID (str | None):
+            raw_saves (types.SavesList):
+        """
         self.directory: str = dataFileInterface.saves_path
         self.dataFileInterface: DataFileInterface = dataFileInterface
         self._description: str = description
@@ -54,6 +70,11 @@ class Run(AutoSaveable):
         self.saves: dict[str, Save] = self._parse(saves)
 
     def getDataFileInterface(self) -> DataFileInterface:
+        """
+            An instance of the DataFileInterface associated with this object.
+        Returns:
+            DataFileInterface
+        """
         return self.dataFileInterface
 
     @property
@@ -72,6 +93,11 @@ class Run(AutoSaveable):
         return saves
 
     def toDict(self) -> types.RunData:
+        """
+        This method serializes this object and all connected `Saves` into a dict
+        Returns:
+            A dict containing all data
+        """
         save_data: types.SavesList = [save.toDict()
                                       for save in self.getSaves()]
         out: types.RunData = {
@@ -84,9 +110,21 @@ class Run(AutoSaveable):
         return out
 
     def getSaves(self) -> list[Save]:
+        """
+        This method lists all `Save` objects
+        Returns:
+            All connected `Save` objects
+        """
         return [save for _, save in self.saves.items()]
 
     def getSaveByUUID(self, uuid: str) -> Save | None:
+        """
+        This method allows access to registered saves
+        Args:
+            uuid (str): The uuid of the wanted `Save` object
+        Returns:
+            The wanted `Save` object or `None` if a save with this uuid does not exist
+        """
         return self.saves.get(uuid)
 
     @property
@@ -97,13 +135,28 @@ class Run(AutoSaveable):
 
     @autosave
     def travelToSave(self, save: Save):
+        """
+        This method allows jumping to a previous save. This does **NOT** load the save. If you want to load a `Save` object, use `save.pushDirectory()`
+        Args:
+            save (Save): The save to jump to
+        """
         self.latestSaveUUID = save.uuid
 
     @autosave
     def appendSave(self, save: Save):
+        """
+        This method registers a `Save` object to this `Run` object
+        Args:
+            save (Save): The save to register
+        """
         self.saves[save.uuid] = save
 
     def createSave(self) -> Save:
+        """
+        This method creates a new `Save` object, and integrates it fully into the data structure.
+        Returns:
+            The newly created `Save` object
+        """
         save = Save.fromEmpty(self)
         save.pullDirectory()
 
@@ -119,6 +172,11 @@ class Run(AutoSaveable):
 
     @autosave
     def removeSave(self, save: Save):
+        """
+        This method deletes a `Save` object and removes it compleatly from the datastructure
+        Args:
+            save (Save): The `Save` object, which should be deleted
+        """
         save.removeStitches()
         save.rmDir()
         self.saves.pop(save.uuid)

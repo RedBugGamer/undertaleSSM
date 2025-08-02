@@ -2,6 +2,9 @@ import enum
 
 
 class Items(enum.Enum):
+    """
+    An enum containing all items mapped to their respective ids
+    """
     NONE = 0
     MONSTER_CANDY = 1
     CROQUET_ROLL = 2

@@ -1,3 +1,9 @@
+"""
+This allows usage of undertaleSSM via cli
+Example:
+    >>> python -m undertaleSSM --help
+"""
+
 import threading
 import typer
 from PySide6.QtCore import QCoreApplication

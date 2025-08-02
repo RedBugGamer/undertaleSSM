@@ -7,6 +7,9 @@ from .flags import Flags
 
 
 class UndertaleFile:
+    """
+    This class allows reading of file[0-9] and provides most lines as attributes
+    """
     def __init__(self, path: str) -> None:
         self.raw_data: list[str] = []
         with open(path, "r") as f:

@@ -2,6 +2,7 @@ import enum
 
 
 class Cellphone(enum.Enum):
+    """An enum containing all possible caller identifiers"""
     NONE = 0
     SAY_HELLO = 201
     PUZZLE_HELP = 202

@@ -2,6 +2,9 @@ import enum
 
 
 class Rooms(enum.Enum):
+    """
+    An enum containing all room mapped to their respective ids
+    """
     ROOM_START = 0
     ROOM_INTROSTORY = 1
     ROOM_INTROIMAGE = 2
