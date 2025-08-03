@@ -48,7 +48,8 @@ class SaveStateManager(DataFileInterface):
     def _observerCallback(self):
         if self.activeRun:
             save = self.activeRun.createSave()
-            self.signals.auto_saved.emit(save)
+            if save:
+                self.signals.auto_saved.emit(save)
 
     def _observerRestartCallback(self):
         self.stopObserver()
