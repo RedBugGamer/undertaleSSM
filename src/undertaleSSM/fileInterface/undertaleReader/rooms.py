@@ -348,4 +348,12 @@ class Rooms(enum.Enum):
     
     @classmethod
     def isTundra(cls,room:Rooms) -> bool:
-        return cls.ROOM_TUNDRA1.value <= room.value <= cls.ROOM_TUNDRA_SANSBASEMENT.value
+        return cls.ROOM_TUNDRA1.value <= room.value <= cls.ROOM_FOGROOM.value
+    
+    @classmethod
+    def isWaterfall(cls,room:Rooms) -> bool:
+        return cls.ROOM_WATER1.value <= room.value <= cls.ROOM_WATER_UNDYNEFINAL3.value
+    
+    @classmethod
+    def isHotland(cls,room:Rooms) -> bool:
+        return cls.ROOM_FIRE1.value <= room.value <= cls.ROOM_FIRE_FINALELEVATOR.value
