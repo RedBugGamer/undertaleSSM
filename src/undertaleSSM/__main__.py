@@ -59,7 +59,7 @@ def record(file: str, run: str | None = None, info: bool = typer.Option(False, "
                     attrs["gonocide_done"] = file0.genocide_hotland
                     attrs["kills"] = file0.kills_hotland
                 for lbl,attr in attrs.items():
-                    typer.echo(f"   {lbl}:{attr}")
+                    typer.echo(f"  {lbl}: {attr}")
     ssm.signals.auto_saved.connect(on_autosave)
 
     typer.confirm(
