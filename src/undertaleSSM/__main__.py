@@ -5,7 +5,7 @@ Example:
 """
 
 import threading
-from typing import Any, List
+from typing import Any
 import typer
 from PySide6.QtCore import QCoreApplication
 import sys
@@ -39,18 +39,26 @@ def record(file: str, run: str | None = None, info: bool = typer.Option(False, "
             reader = save.getReader()
             file0 = reader.file0
             if file0:
-                attrs:List[tuple[str,Any]] = [
-                    ("room",file0.room)
-                    ]
+                attrs:dict[str,Any] = {
+                    "room":file0.room
+                }
                 if Rooms.isRuins(file0.room):
-                    attrs.append(("area","ruins"))
-                    attrs.append(("gonocide_done",file0.genocide_ruins))
-                    attrs.append(("kills",file0.kills_ruins))
+                    attrs["area"] = "ruins"
+                    attrs["gonocide_done"] = file0.genocide_ruins
+                    attrs["kills"] = file0.kills_ruins
                 elif Rooms.isTundra(file0.room):
-                    attrs.append(("area","tundra"))
-                    attrs.append(("gonocide_done",file0.genocide_tundra))
-                    attrs.append(("kills",file0.kills_tundra))
-                for lbl,attr in attrs:
+                    attrs["area"] = "tundra"
+                    attrs["gonocide_done"] = file0.genocide_tundra
+                    attrs["kills"] = file0.kills_tundra
+                elif Rooms.isWaterfall(file0.room):
+                    attrs["area"] = "waterfall"
+                    attrs["gonocide_done"] = file0.genocide_water
+                    attrs["kills"] = file0.kills_water
+                elif Rooms.isHotland(file0.room):
+                    attrs["area"] = "Hotland"
+                    attrs["gonocide_done"] = file0.genocide_hotland
+                    attrs["kills"] = file0.kills_hotland
+                for lbl,attr in attrs.items():
                     typer.echo(f"   {lbl}:{attr}")
     ssm.signals.auto_saved.connect(on_autosave)
 

@@ -450,7 +450,6 @@ class UndertaleFile:
         self.toggle_final_beam = self.getLineInt(Flags.TOGGLE_FINAL_BEAM)
         self.plot_over = self.getLineInt(Flags.PLOT_OVER)
         self.conversation_asriel2 = self.getLineInt(Flags.CONVERSATION_ASRIEL2)
-        self.choice_left_toriel = self.getLineInt(Flags.CHOICE_LEFT_TORIEL)
         self.plot = self.getLineFloat(Flags.PLOT)
         self.menuchoice_0 = self.getLineInt(Flags.MENUCHOICE_0)
         self.menuchoice_1 = self.getLineInt(Flags.MENUCHOICE_1)
