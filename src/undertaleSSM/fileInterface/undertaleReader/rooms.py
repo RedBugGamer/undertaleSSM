@@ -1,3 +1,4 @@
+from __future__ import annotations
 import enum
 
 
@@ -340,3 +341,11 @@ class Rooms(enum.Enum):
     ROOM_ASRIELMEMORY = 332
     ROOM_ASRIELTEST = 333
     ROOM_AFINALTEST = 334
+    
+    @classmethod
+    def isRuins(cls,room:Rooms) -> bool:
+        return cls.ROOM_RUINS1.value <= room.value <= cls.ROOM_RUINSEXIT.value
+    
+    @classmethod
+    def isTundra(cls,room:Rooms) -> bool:
+        return cls.ROOM_TUNDRA1.value <= room.value <= cls.ROOM_TUNDRA_SANSBASEMENT.value

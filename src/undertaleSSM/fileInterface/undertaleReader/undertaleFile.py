@@ -157,7 +157,7 @@ class UndertaleFile:
         self.interacted_garbage_savepoint = self.getLineInt(
             Flags.INTERACTED_GARBAGE_SAVEPOINT)
         self.status_stable = self.getLineInt(Flags.STATUS_STABLE)
-        self.talked_napstablook = self.getLineInt(Flags.TALKED_NAPSTABLOOK)
+        self.dated_napstablook = self.getLineInt(Flags.DATED_NAPSTABLOOK)
         self.current_napstablook_song = self.getLineInt(
             Flags.CURRENT_NAPSTABLOOK_SONG)
         self.aaron_woshua_event = self.getLineInt(Flags.AARON_WOSHUA_EVENT)
@@ -226,7 +226,7 @@ class UndertaleFile:
         self.conversation_napstablook_pacifist = self.getLineInt(
             Flags.CONVERSATION_NAPSTABLOOK_PACIFIST)
         self.kills_area_pointer = self.getLineInt(Flags.KILLS_AREA_POINTER)
-        self.kills_other = self.getLineInt(Flags.KILLS_OTHER)
+        self.kills_collective = self.getLineInt(Flags.KILLS_COLLECTIVE)
         self.kills_ruins = self.getLineInt(Flags.KILLS_RUINS)
         self.kills_tundra = self.getLineInt(Flags.KILLS_TUNDRA)
         self.kills_water = self.getLineInt(Flags.KILLS_WATER)
